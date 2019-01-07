@@ -5,7 +5,7 @@ Right now everything is inside a google docs: https://docs.google.com/document/d
 
 # data
 
-- data/unprocessed is part of git and contains the small data set where we test on
+- data/input_data is part of git and contains the small data set where we test on
 - data/processed is NOT part of the repository (see .gitignore). All intermediate data can be stored there
 
 # setup
