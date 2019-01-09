@@ -2,7 +2,6 @@
 
 Right now everything is inside a google docs: https://docs.google.com/document/d/1_r8AYzP6EbS9Ynvjod2h4EX_h4W27GZN_Cb1dbOyX30/edit#
 
-
 # data
 
 - data/input_data is part of git and contains the small data set where we test on
@@ -20,6 +19,3 @@ Right now everything is inside a google docs: https://docs.google.com/document/d
     jupyter notebook
 
 
-# notebook
-
-In order to run notebooks load your virtual environment, install the pip dependencies, cd to notebooks and run
