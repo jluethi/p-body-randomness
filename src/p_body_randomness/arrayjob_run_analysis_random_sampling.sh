@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # Submit a job array with index values between 0 and 5 (inclusive)
-#SBATCH --array=0-1
+#SBATCH --array=0-37
 
 # Write output to slurm-$JOBID_$TASKID.txt
 #SBATCH -o slurm-%j_%a.txt
