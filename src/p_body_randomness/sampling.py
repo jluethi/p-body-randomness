@@ -25,4 +25,3 @@ def sample_pbodies(cytoplasmic_mask, n, area_fn=None):
             samples.append((x, y, area))
 
     return samples
- 
