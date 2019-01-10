@@ -11,7 +11,7 @@ import cv2
 
 from p_body_randomness.extract_sample_areas import extract_sample_area
 from p_body_randomness.sampling import sample_pbodies
-from p_body_randomness.centroids import extract_centroids
+from p_body_randomness.centroids import extract_centroids_in_sample_area
 from p_body_randomness.metrics import nearest_neighbor_distance
 
 # Divide the dataset into the different wells, this script runs one well
@@ -32,7 +32,7 @@ dim_y = 6
 image_types = {'pbodies': '13_Pbody_Segm', 'protein': '13_Succs', 'cellmask': 'segmentation', 'dapi': '2_DAPI'}
 subfolders = {'pbodies': 'singleCellImages_PbodySegmentation', 'protein': 'singleCellImages', 'cellmask': 'singleCellSegmentations', 'dapi': 'singleCellImages'}
 base_path = '/data/active/jluethi/20180503-SubcellularLocalizationMultiplexing'
-output_path = '/data/homes/jluethi/20190109-pbodies-random-distribution-test/run1_randomSampling_uniform'
+output_path = '/data/homes/jluethi/20190109-pbodies-random-distribution-test/run2_randomSampling_uniform_ExcludeNuclearPbodies'
 TEMPLATE_FILENAME = '20180606-SLP_Multiplexing_p1_C03_x00{x}_y00{y}_z000_t000_{image_type}_Label{label}.png'
 total_file_list = os.listdir(os.path.join(base_path, subfolders['cellmask']))
 
@@ -45,17 +45,17 @@ def evaluate_site(well, site_x, site_y, label):
     pbodies_image = cv2.imread(os.path.join(base_path,os.path.join(subfolders['pbodies'],TEMPLATE_FILENAME.format(x = site_x, y = site_y, image_type=image_types['pbodies'], label = label))), 0)
     dapi_image = cv2.imread(os.path.join(base_path,os.path.join(subfolders['dapi'],TEMPLATE_FILENAME.format(x = site_x, y = site_y, image_type=image_types['dapi'], label = label))), 0)
     cellmask_image = cv2.imread(os.path.join(base_path,os.path.join(subfolders['cellmask'],TEMPLATE_FILENAME.format(x = site_x, y = site_y, image_type=image_types['cellmask'], label = label))), 0)
-    centroids = extract_centroids(pbodies_image, pbody_area_threshold)
+    cytoplasmic_mask = extract_sample_area(cellmask_image, dapi_image, dapi_threshold)
+    [centroids, centroids_in_nucleus] = extract_centroids_in_sample_area(pbodies_image, cytoplasmic_mask, pbody_area_threshold)
     number_of_pbodies = len(centroids)
+    number_of_pbodies_in_nucleus = len(centroids_in_nucleus)
 
-    # Nearest neighbors can only be calculate if there are at least 2 P-bodies
+    # Nearest neighbors can only be calculate if there are at least 3 P-bodies
     if number_of_pbodies >= min_nb_pbodies:
         # Calculate the real nearest neighbor distances
         real_distances = nearest_neighbor_distance(centroids)
         mean_real_nn_distance = np.mean(real_distances)
 
-
-        cytoplasmic_mask = extract_sample_area(cellmask_image, dapi_image, dapi_threshold)
         # Calculate area of cytoplasm of the cell
         cytoplasmic_area = np.sum(np.sum(cytoplasmic_mask > 1))
 
@@ -87,7 +87,7 @@ def evaluate_site(well, site_x, site_y, label):
         # Calculate P-value of measured vs. 1000 simulations (2 p-values, for both one-sided tests)
         p_value_measured_lower = sum(mean_real_nn_distance < mean_of_multiple_simulation_rounds3)/len(mean_of_multiple_simulation_rounds3)
 
-        return [number_of_pbodies, cytoplasmic_area ,mean_real_nn_distance, mean_simulated_nn_distance, np.mean(mean_of_multiple_simulation_rounds), np.mean(mean_of_multiple_simulation_rounds2), np.mean(mean_of_multiple_simulation_rounds3), p_value_measured_lower]
+        return [number_of_pbodies, number_of_pbodies_in_nucleus, cytoplasmic_area ,mean_real_nn_distance, mean_simulated_nn_distance, np.mean(mean_of_multiple_simulation_rounds), np.mean(mean_of_multiple_simulation_rounds2), np.mean(mean_of_multiple_simulation_rounds3), p_value_measured_lower]
 
     else:
         raise TooFewPbodiesException("This cell only has " + str(number_of_pbodies) + " P-bodies.")
@@ -96,7 +96,7 @@ def evaluate_site(well, site_x, site_y, label):
 # Read in the input from command line about which site to work on
 index = int(sys.argv[1])
 well = wells[index]
-columns = ['Well', 'SiteX', 'SiteY', 'Label','Number_of_pbodies','Area_of_Cytoplasm','Mean_nn_distances_measured', 'Mean_nn_distances_simulated', 'Mean_Of_mean_nn_distances_simulated_10', 'Mean_Of_mean_nn_distances_simulated_100', 'Mean_Of_mean_nn_distances_simulated_1000','p-value_measured_lower_1000_sim']
+columns = ['Well', 'SiteX', 'SiteY', 'Label','Number_of_pbodies', 'Number_of_pbodies_in_Nucleus','Area_of_Cytoplasm','Mean_nn_distances_measured', 'Mean_nn_distances_simulated', 'Mean_Of_mean_nn_distances_simulated_10', 'Mean_Of_mean_nn_distances_simulated_100', 'Mean_Of_mean_nn_distances_simulated_1000','p-value_measured_lower_1000_sim']
 measurements = pd.DataFrame()
 for site_x in range(dim_x):
     for site_y in range(dim_y):
