@@ -26,4 +26,4 @@ fi
 # echo 1>&2 "Running in virtualenv '$venv', using python interpreter $(command -v python) ..."
 
 
-exec python run_analysis_on_cluster.py $n
+exec python run_analysis_part2_on_cluster.py $n
