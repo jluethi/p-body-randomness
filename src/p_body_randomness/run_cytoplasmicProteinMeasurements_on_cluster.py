@@ -68,7 +68,7 @@ def evaluate_site(well, site_x, site_y, label):
         for i in range(100):
             sampled_pbodies = sample_pbodies(smooth, number_of_pbodies, area_fn=lambda: 40)
             sampled_pbodies_mask = generate_centroids_mask(sampled_pbodies)
-            [, mean_protein_intensity_pbodies_simulated] = calculate_mean_intensities(protein_image, sampled_pbodies_mask, cellmask_image, dapi_image)
+            _ , mean_protein_intensity_pbodies_simulated = calculate_mean_intensities(protein_image, sampled_pbodies_mask, cellmask_image, dapi_image)
             mean_of_multiple_simulation_rounds.append(mean_protein_intensity_pbodies_simulated)
 
         # Calculate the mean protein intensity around the actual P-bodies
