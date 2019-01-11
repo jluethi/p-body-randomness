@@ -11,7 +11,7 @@ import cv2
 
 from p_body_randomness.extract_sample_areas import extract_sample_area
 from p_body_randomness.sampling import sample_pbodies
-from p_body_randomness.centroids import extract_centroids, extract_centroids_in_sample_area
+from p_body_randomness.centroids import extract_centroids, extract_centroids_in_sample_area, generate_centroids_mask
 from p_body_randomness.metrics import nearest_neighbor_distance
 from p_body_randomness.smooth_image import smooth_protein_image
 from p_body_randomness.protein_signal_calculation import calculate_mean_intensities
@@ -68,7 +68,7 @@ def evaluate_site(well, site_x, site_y, label):
         for i in range(100):
             sampled_pbodies = sample_pbodies(smooth, number_of_pbodies, area_fn=lambda: 40)
             sampled_pbodies_mask = generate_centroids_mask(sampled_pbodies)
-            [~, mean_protein_intensity_pbodies_simulated] = calculate_mean_intensities(protein_image, sampled_pbodies_mask, cellmask_image, dapi_image)
+            [, mean_protein_intensity_pbodies_simulated] = calculate_mean_intensities(protein_image, sampled_pbodies_mask, cellmask_image, dapi_image)
             mean_of_multiple_simulation_rounds.append(mean_protein_intensity_pbodies_simulated)
 
         # Calculate the mean protein intensity around the actual P-bodies
