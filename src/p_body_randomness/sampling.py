@@ -3,7 +3,7 @@ from scipy.stats import rv_discrete
 from metrics import nearest_neighbor_distance
 
 
-def sample_pbodies(sampling_map, n, area_fn=None, min_distance = 10):
+def sample_pbodies(sampling_map, n, area_fn=None, min_distance = 6):
     '''
     Args:
         cytoplasmic_mask: Either a binary numpy mask representing the sample
