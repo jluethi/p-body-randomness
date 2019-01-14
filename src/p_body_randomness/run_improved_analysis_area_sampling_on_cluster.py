@@ -113,5 +113,5 @@ for site_x in range(dim_x):
             combined_results = pd.Series([well, site_x, site_y, label] + results, index = columns)
             measurements = measurements.append(combined_results, ignore_index=True)
 
-output_filename = 'NearestNeighborResults_VolumeSampling_' + well + '.csv'
+output_filename = 'NearestNeighborResults_AreaSampling' + well + '.csv'
 measurements.to_csv(os.path.join(output_path, output_filename), na_rep = 'NaN', index=False)
