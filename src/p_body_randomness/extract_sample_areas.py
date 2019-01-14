@@ -34,5 +34,5 @@ def extract_sample_area(cell_mask, dapi_image, dapi_threshold = 10, shrink_nucle
 # cell_img = cv2.imread(cell_img_path, 0)
 # dapi_image = cv2.imread(dapi_img_path, 0)
 #
-# cytoplasm_mask = extract_sample_area(cell_img, dapi_image)
+# cytoplasm_mask = extract_sample_area(cell_img, dapi_image, shrink_nucleus = 3)
 # cv2.imwrite('test_img.png', cytoplasm_mask)
