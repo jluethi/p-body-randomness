@@ -52,7 +52,7 @@ def add_nuclear_probability(cell_mask, nucleus_image, nucleus_percentage = 0.05,
     nucleus_smoothed = cv2.GaussianBlur(nucleus_image,(5,5),0)
     nucleus_mask_unshrunk = nucleus_smoothed > nucleus_threshold
     kernel = np.ones((3,3),np.uint8)
-    nucleus_mask = cv2.erode(np.array(nucleus_mask, dtype=np.uint8),kernel,iterations = shrink_nucleus)
+    nucleus_mask = cv2.erode(np.array(nucleus_mask_unshrunk, dtype=np.uint8),kernel,iterations = shrink_nucleus)
 
     # Calculating total signal from the cytoplasm and nucleus area.
     total_cytoplasm = np.sum(cell_mask)
