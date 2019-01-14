@@ -30,7 +30,7 @@ dim_y = 6
 image_types = {'pbodies': '13_Pbody_Segm', 'protein': '13_Succs', 'cellmask': 'segmentation', 'dapi': '2_DAPI'}
 subfolders = {'pbodies': 'singleCellImages_PbodySegmentation', 'protein': 'singleCellImages', 'cellmask': 'singleCellSegmentations', 'dapi': 'singleCellImages'}
 base_path = '/data/active/jluethi/20180503-SubcellularLocalizationMultiplexing'
-output_path = '/data/homes/jluethi/20190109-pbodies-random-distribution-test/run2_randomSampling_uniform_ExcludeNuclearPbodies'
+output_path = '/data/homes/jluethi/20190109-pbodies-random-distribution-test/run6_pbody_numbers_nucleus'
 TEMPLATE_FILENAME = '20180606-SLP_Multiplexing_p1_C03_x00{x}_y00{y}_z000_t000_{image_type}_Label{label}.png'
 total_file_list = os.listdir(os.path.join(base_path, subfolders['cellmask']))
 
@@ -52,13 +52,12 @@ def evaluate_site(well, site_x, site_y, label):
     number_of_pbodies_nucleus = len(centroids_nucleus)
 
     # Unshrunken masks for comparison
-    number_of_pbodies_full_cytoplasm = len(centroids)
-    number_of_pbodies_full_nucleus = len(centroids_nucleus)
+    number_of_pbodies_full_cytoplasm = len(centroids_full_cyt)
+    number_of_pbodies_full_nucleus = len(centroids_full_nucleus)
 
 
     # Calculate area of cytoplasm of the cell
     cytoplasmic_area = np.sum(np.sum(cytoplasmic_mask > 1))
-    number_of_pbodies_in_nucleus
 
     return [number_of_pbodies_cytoplasm, number_of_pbodies_nucleus, number_of_pbodies_full_cytoplasm, number_of_pbodies_full_nucleus, cytoplasmic_area]
 
