@@ -19,7 +19,9 @@ def sample_pbodies(sampling_map, n, area_fn=None, min_distance = 6):
     '''
 
     samples = []
-    for x in _sample_x_from_map(sampling_map, n):
+    marginal_x = _calculate_marginal_probability(sampling_map)
+    while len(samples) < n:
+        x = marginal_x.rvs(size=1)[0]
         y = _sample_y_for_x(sampling_map, x)
 
         try:
@@ -28,10 +30,10 @@ def sample_pbodies(sampling_map, n, area_fn=None, min_distance = 6):
             area = 0
 
         # Check distance to existing P-pbodies
-        if len(samples) > 1:
+        if len(samples) > 0:
             try:
-                # Calculate the nearest neighbor distance to all other existing P-pbodies
-                min_distance_measured = min(nearest_neighbor_distance(samples))
+                # Calculate the nearest neighbor distance of the new point to all other existing P-pbodies
+                min_distance_measured = min(nearest_neighbor_distance(samples + [(x, y, area)]))
                 if min_distance_measured > min_distance:
                     samples.append((x, y, area))
                 # when only 2 P-bodies are present and it samples the same location,
@@ -40,7 +42,7 @@ def sample_pbodies(sampling_map, n, area_fn=None, min_distance = 6):
                 pass
         else:
             samples.append((x, y, area))
-    
+
     return samples
 
 
@@ -53,11 +55,7 @@ def _sample_y_for_x(sampling_map, x):
     return prob_y.rvs(size=1)[0]
 
 
-def _sample_x_from_map(sampling_map, n):
-    # if len(np.unique(sampling_map) == 2):
-    #     while
-
-    # compute marginal probability
+def _calculate_marginal_probability(sampling_map):
     column_sums = sampling_map.sum(axis=0)
 
     marginal_x = rv_discrete(name='marginal_x', values=(
@@ -65,6 +63,4 @@ def _sample_x_from_map(sampling_map, n):
         column_sums / column_sums.sum())
     )
 
-    x = marginal_x.rvs(size=n)
-
-    return x
+    return marginal_x
