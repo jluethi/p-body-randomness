@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.stats import rv_discrete
-from metrics import nearest_neighbor_distance
+from p_body_randomness.metrics import nearest_neighbor_distance
 
 
 def sample_pbodies(sampling_map, n, area_fn=None, min_distance = 6):
@@ -38,7 +38,9 @@ def sample_pbodies(sampling_map, n, area_fn=None, min_distance = 6):
                 # the nearest neighbor function throws a ValueError
             except ValueError:
                 pass
-
+        else:
+            samples.append((x, y, area))
+    
     return samples
 
 
